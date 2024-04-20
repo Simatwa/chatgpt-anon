@@ -31,8 +31,10 @@ class ChatGPT:
         self.session = requests.Session()
         self.timeout = timeout
         self.auth = {}  # Will be updated while updating headers
-        #self.session.cookies.update(utils.get_cookies(cookie_path))
-        self.session.headers.update(utils.get_request_headers_and_initialize_request(self))
+        # self.session.cookies.update(utils.get_cookies(cookie_path))
+        self.session.headers.update(
+            utils.get_request_headers_and_initialize_request(self)
+        )
         self.conversation_endpoint = "https://chat.openai.com/backend-anon/conversation"
         self.account_detail_endpoint = (
             "https://chat.openai.com/backend-anon/accounts/check"
@@ -159,8 +161,8 @@ class ChatGPT:
         }
         ```
         """
-        payload:dict = self.__generate_payload(prompt)
-        #print(json.dumps(payload, indent=4))
+        payload: dict = self.__generate_payload(prompt)
+        # print(json.dumps(payload, indent=4))
         self.update_sentinel_tokens()
         response = self.session.post(
             url=self.conversation_endpoint,

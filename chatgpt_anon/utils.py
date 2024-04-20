@@ -30,12 +30,12 @@ headers = request_headers = {
 }
 
 init_headers = {
-    "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Encoding" :	"gzip, deflate",
-    "Accept-Language" :	"en-US,en;q=0.5",
-    "User-Agent" : headers['User-Agent'],
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept-Language": "en-US,en;q=0.5",
+    "User-Agent": headers["User-Agent"],
     "Connection": "keep-alive",
-    "Sec-Fetch-Site" :	"none",
+    "Sec-Fetch-Site": "none",
 }
 
 response_example = {
@@ -106,7 +106,7 @@ def get_request_headers_and_initialize_request(self) -> dict:
     Returns:
         dict: Request headers
     """
-    resp1 = self.session.get('https://chat.openai.com', headers=init_headers)
+    resp1 = self.session.get("https://chat.openai.com", headers=init_headers)
     resp1.raise_for_status()
     """
     resp = self.session.get(
@@ -121,8 +121,7 @@ def get_request_headers_and_initialize_request(self) -> dict:
 @error_handler(
     exit_on_error=True,
     raise_err=True,
-    info=""
-    + __common_error_support_info,
+    info="" + __common_error_support_info,
 )
 def get_cookies(path: str) -> dict:
     """Reads cookies and format them
@@ -250,7 +249,7 @@ def generate_payload(self: object, prompt: str) -> dict:
         payload_template["conversation_id"] = self.current_conversation_id
     else:
         # Create new conversation
-        payload_template["messages"][0]["id"] = 'aaa2' + uuid4().__str__()[4:]
+        payload_template["messages"][0]["id"] = "aaa2" + uuid4().__str__()[4:]
         payload_template["suggestions"] = [
             prompt["prompt"] for prompt in self.prompt_library()["items"]
         ]

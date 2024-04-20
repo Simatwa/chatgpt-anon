@@ -217,18 +217,14 @@ class busy_bar:
 class InteractiveChatGPT(cmd.Cmd):
     intro = f"Welcome to {__info__} Type help <command> or h for general help info."
     prompt = (
-        f"┌─[{getpass.getuser().capitalize()}@WebChatGPT](v{__version__})\r\n└──╼ ❯❯❯"
+        f"┌─[{getpass.getuser().capitalize()}@chatgpt-anon](v{__version__})\r\n└──╼ ❯❯❯"
     )
 
-    def __init__(self, cookie_path, model, index, timeout, *args, **kwargs):
+    def __init__(self, model, timeout, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cookie_path = cookie_path
         self.model = model
-        self.conversation_index = index
         self.timeout = timeout
-        self.bot = ChatGPT(
-            cookie_path, model=model, conversation_index=index, timeout=timeout
-        )
+        self.bot = ChatGPT(model=model, timeout=timeout)
         self.user_name = getpass.getuser().capitalize()
         self.prettify = True
         self.color = "cyan"
@@ -494,20 +490,13 @@ class InteractiveChatGPT(cmd.Cmd):
             self.model = click.prompt(
                 "ChatGPT model", default=self.model, type=click.STRING
             )
-            self.conversation_index = click.prompt(
-                "Conversation Index",
-                default=self.conversation_index,
-                type=click.INT,
-            )
             self.timeout = click.prompt(
                 "Request timeout",
                 default=self.timeout,
                 type=click.INT,
             )
             self.bot = ChatGPT(
-                self.cookie_path,
                 model=self.model,
-                conversation_index=self.conversation_index,
                 timeout=self.timeout,
             )
 
@@ -665,7 +654,7 @@ class InteractiveChatGPT(cmd.Cmd):
 
 
 @click.group("chat")
-@click.version_option(__version__, "-v", "--version", package_name="webchatgpt")
+@click.version_option(__version__, "-v", "--version", package_name="chatgpt-anon")
 @click.help_option("-h", "--help")
 def chat():
     """Reverse Engineered ChatGPT Web-Version"""
@@ -674,22 +663,11 @@ def chat():
 
 @chat.command()
 @click.option(
-    "-C",
-    "--cookie-path",
-    type=click.Path(exists=True),
-    help="Path to .json file containing cookies for `chat.openai.com`",
-    prompt="Enter path to .json file containing cookies for `chat.openai.com`",
-    envvar="openai_cookie_file",
-)
-@click.option(
     "-M",
     "--model",
     help="ChatGPT's model to be used",
     envvar="chatgpt_model",
     default="text-davinci-002-render-sha",
-)
-@click.option(
-    "-I", "--index", help="Conversation index to resume from", type=click.INT, default=1
 )
 @click.option(
     "-T",
@@ -742,9 +720,7 @@ def chat():
 )
 @click.help_option("-h", "--help")
 def interactive(
-    cookie_path,
     model,
-    index,
     timeout,
     prompt,
     busy_bar_index,
@@ -762,7 +738,7 @@ def interactive(
             Repo : {__repo__}
             By : {__author__}
           """,
-            title=f"WebChatGPT v{__version__}",
+            title=f"chatgpt-anon v{__version__}",
             style=Style(
                 color="cyan",
                 frame=True,
@@ -770,7 +746,7 @@ def interactive(
         ),
     )
     busy_bar.spin_index = busy_bar_index
-    bot = InteractiveChatGPT(cookie_path, model, index, timeout)
+    bot = InteractiveChatGPT(model, timeout)
     bot.prettify = prettify
     bot.color = color
     bot.show_title = show_title
@@ -784,22 +760,11 @@ def interactive(
 
 @chat.command()
 @click.option(
-    "-C",
-    "--cookie-path",
-    type=click.Path(exists=True),
-    help="Path to .json file containing cookies for `chat.openai.com`",
-    prompt="Enter path to .json file containing cookies for `chat.openai.com`",
-    envvar="openai_cookie_file",
-)
-@click.option(
     "-M",
     "--model",
     help="ChatGPT's model to be used",
     envvar="chatgpt_model",
     default="text-davinci-002-render-sha",
-)
-@click.option(
-    "-I", "--index", help="Conversation index to resume from", type=click.INT, default=1
 )
 @click.option(
     "-T",
@@ -846,9 +811,7 @@ def interactive(
 @click.option("--prettify/--raw", default=True, help="Prettify the markdowned response")
 @click.help_option("-h", "--help")
 def generate(
-    cookie_path,
     model,
-    index,
     timeout,
     prompt,
     code_theme,
@@ -862,7 +825,7 @@ def generate(
 
     # bot = ChatGPT(cookie_path, model, index, timeout=timeout)
     busy_bar.spin_index = busy_bar_index
-    bot = InteractiveChatGPT(cookie_path, model, index, timeout)
+    bot = InteractiveChatGPT(model, timeout)
     bot.prettify = prettify
     bot.color = color
     bot.code_theme = code_theme

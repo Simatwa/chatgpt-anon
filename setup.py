@@ -31,7 +31,7 @@ setup(
     entry_points={
         "console_scripts": [
             "chatgpt-anon = chatgpt_anon.console:main",
-            "wbc = chatgpt_anon.console:main",
+            "cga = chatgpt_anon.console:main",
         ],
     },
     install_requires=[
